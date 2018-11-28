@@ -264,6 +264,7 @@ def jeu(event,grille,grille_init,joueur,coor_vide,coor_salles,coor_paradis,coor_
     option=event.keysym
     while option not in ["Left","Right","Up","Down","Escape","Enter"]:
         showinfo("Attention","Pas une option de déplacement")
+        break
     if (option=="Left") and (grille[y][x-1] != " "):
         x-=1
     elif (option=="Right") and (grille[y][x+1] != " "):
