@@ -74,7 +74,7 @@ def definir_chateau():
     
 
 ## afficher le chateau
-def affiche_chateau(grille,grille_init,fenetre):
+def affiche_chateau(grille,grille_init,joueur,fenetre):
     xlen = len(grille[0])
     ylen = len(grille)
     x,y = position(grille)
@@ -99,9 +99,8 @@ def affiche_chateau(grille,grille_init,fenetre):
                     color="blue"
                 Canvas(fenetre, width=800 / xlen, height=700 / ylen, bg="blue").grid(column=colonne, row=ligne)
     Label(text="X", font="Arial 25 bold", fg="white", bg=color).grid(row=y, column=x)
-    Label(fenetre, text="Où voulez-vous aller ? Utilisez les fléches directionnelles du clavier").grid(row=ylen+1, columnspan=xlen+5)
-    Button(fenetre, text="Quitter", command=fenetre.quit).grid(row=ylen + 1, column=xlen + 1)
-
+    Label(fenetre, text="Gasper a encore "+str(joueur["energie"])+" vies").grid(row=ylen+1, columnspan=xlen+5)
+    
 ## trouver la position du joueur à tout moment dans le chateau
 def position(grille):
     for y in range(len(grille)):
@@ -137,12 +136,12 @@ def action_energie(x,y,joueur,coor_energie):
 ### LES MECHANTS ###
 
 ## définir l'action du maitre du chateau
-def action_maitre(coor,grille,grille_init,x,y,fenetre):
+def action_maitre(coor,grille,grille_init,x,y,joueur,fenetre):
     showinfo("Maitre", "Oh non ! Vous êtes nez à nez avec le maître du chateau !\nIl vous a renvoyé dans la case réception")
     grille[y][x]="S"
     x,y=coor[0]
     grille[y][x]="X"
-    affiche_chateau(grille,grille_init,fenetre)
+    affiche_chateau(grille,grille_init,joueur,fenetre)
     return x,y
 
 ## définir l'action du savant fou
@@ -158,7 +157,7 @@ def action_savant(joueur,grille,grille_init,x,y,coor_vide,coor_paradis,xlen,ylen
         x=random.randrange(xlen)
         y=random.randrange(ylen)
     grille[y][x]="X"
-    affiche_chateau(grille,grille_init,fenetre)
+    affiche_chateau(grille,grille_init,joueur,fenetre)
     showinfo("Savant","Gasper a maintenant "+str(joueur["energie"])+" points d'énergie")
     return x,y,joueur
 
@@ -194,7 +193,7 @@ def place_item(coordonnees,monstres,pintes):
 def monster(x,y,joueur,grille,grille_init,coor_monstres,coor_reception,coor_vide,coor_paradis,xlen,ylen,fenetre):
     if [x,y] in coor_monstres.values():
         if [x,y] == coor_monstres["maitre_chateau"] :
-            x,y=action_maitre(coor_reception,grille,grille_init,x,y,fenetre)
+            x,y=action_maitre(coor_reception,grille,grille_init,x,y,joueur,fenetre)
         elif [x,y] == coor_monstres["savant_fou"]:
             x,y,joueur=action_savant(joueur,grille,grille_init,x,y,coor_vide,coor_paradis,xlen,ylen,fenetre)
         else :
@@ -241,7 +240,12 @@ def cri(coor_advert,x,y,fenetre):
 
 ## début du jeu
 def init_jeu(grille,coor,fenetre,xlen,ylen):
+    for ligne in range(ylen):
+        for colonne in range(xlen):
+            Canvas(fenetre, width=800 / xlen, height=700 / ylen, bg="black").grid(column=colonne,row=ligne)
     Label(fenetre,text="Gasper, le gentil fantôme d’un chateau, aimerait pouvoir retourner dans le monde des fantômes \noù il fait toujours beau et où tous ses amis l’attendent. Mais il est perdu dans un labyrinthe de pièces dont il ne trouve plus la sortie... \nVoulez-vous l'aider à braver tous les dangers ?").grid(row=ylen,columnspan=xlen)
+    Label(fenetre, text="Où voulez-vous aller ? Utilisez les fléches directionnelles du clavier").grid(row=ylen+2, columnspan=xlen+5)
+    Button(fenetre, text="Quitter", command=fenetre.quit).grid(row=ylen + 2, column=xlen + 1)
     grille=salle(grille,coor,"X")
     return grille
 
@@ -280,7 +284,7 @@ def jeu(event,grille,grille_init,joueur,coor_vide,coor_salles,coor_paradis,coor_
     grille[tmp_coor[1]][tmp_coor[0]]=tmp
     tmp=grille_init[y][x]
     grille[y][x]="X"
-    affiche_chateau(grille,grille_init,fenetre)
+    affiche_chateau(grille,grille_init,joueur,fenetre)
     if tmp=="*":
         cri(coor_advert,x,y,fenetre)
     elif tmp=="S":
@@ -300,7 +304,7 @@ def FantomeEscape():
 
     chateau_init=copy.deepcopy(chateau)
     chateau=init_jeu(chateau,coor_reception,fenetre,xlen,ylen)
-    affiche_chateau(chateau,chateau_init,fenetre)
+    affiche_chateau(chateau,chateau_init,joueur,fenetre)
     fenetre.focus_set()
     def Game(event,grille=chateau,grille_init=chateau_init,joueur=joueur,coor_vide=coor_vide,coor_salles=coor_salles,coor_paradis=coor_paradis,coor_reception=coor_reception,coor_monstres=coor_monstres,coor_energie=coor_energie,xlen=xlen,ylen=ylen,fenetre=fenetre):
         return jeu(event,grille,grille_init,joueur,coor_vide,coor_salles,coor_paradis,coor_reception,coor_monstres,coor_energie,xlen,ylen,fenetre)
