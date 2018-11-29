@@ -23,6 +23,7 @@ def ajout_salle(grille,coor,valeur):
         grille[c[1]][c[0]]=valeur
     return grille
 
+
 ## définir toutes les salles et couloirs du chateau avec leur coordonées
 def definir_chateau():    
     xlen=15
@@ -65,9 +66,9 @@ def definir_chateau():
     for pinte in range(5):
         energie.append("pinte"+str(pinte+1))
     
-    coor_monstres,coor_energie=place_item(coor_salles,monstres,energie)        # on place les pintes d'énergie et les monstres dans le chateau
+    coor_monstres,coor_energie=place_objet(chateau,monstres,energie)        # on place les pintes d'énergie et les monstres dans le chateau
 
-    return chateau,coor_vide,coor_salles,coor_paradis,coor_reception,coor_monstres,coor_energie,xlen,ylen 
+    return chateau,coor_monstres,coor_energie,xlen,ylen 
     
 
 ## afficher le chateau
@@ -78,13 +79,21 @@ def affiche_chateau(grille):
         print " "
 
 ## trouver la position du joueur à tout moment dans le chateau
-def position(grille):
+def position_joueur(grille):
     for y in range(len(grille)):
         for x in range(len(grille[y])):
             if grille[y][x]=="X":
                 idx=x
                 idy=y
     return idx,idy
+
+def trouve_coor(grille,element):
+    coor=[]
+    for ligne in range(len(grille)):
+        for colonne in range(len(grille[ligne])):
+            if grille[ligne][colonne]==element:
+                coor.append([colonne,ligne])
+    return coor
 
 
 ### LE FANTOME ###
@@ -112,16 +121,18 @@ def action_energie(x,y,joueur,coor_energie):
 ### LES MECHANTS ###
 
 ## définir l'action du maitre du chateau
-def action_maitre(coor,grille,x,y):
+def action_maitre(grille,x,y):
     print "Oh non ! Vous êtes nez à nez avec le maître du chateau !\nIl vous a renvoyé dans la case réception"
     grille[y][x]="S"
+    coor=trouve_coor(grille,"R")
     x,y=coor[0]
+    tmp=copy.deepcopy(grille[y][x])
     grille[y][x]="X"
     affiche_chateau(grille)
-    return x,y
+    return x,y,tmp
 
 ## définir l'action du savant fou 
-def action_savant(joueur,grille,x,y,coor_vide,coor_paradis,xlen,ylen):
+def action_savant(joueur,grille,x,y,xlen,ylen):
     print "Oh non ! Le savant vous attaque !\nVous perdez 1 pinte de vie et vous êtes envoyé dans une autre salle"
     joueur["energie"]=joueur["energie"]-1
     if joueur["energie"]<=0:
@@ -129,13 +140,16 @@ def action_savant(joueur,grille,x,y,coor_vide,coor_paradis,xlen,ylen):
     grille[y][x]="S"
     x=0
     y=0
+    coor_vide=trouve_coor(grille," ")
+    coor_paradis=trouve_coor(grille,"P")
     while ([x,y] in coor_vide) or ([x,y] in coor_paradis):
         x=random.randrange(xlen)
         y=random.randrange(ylen)
+    tmp=copy.deepcopy(grille[y][x])
     grille[y][x]="X"
     print "Gasper a maintenant",joueur["energie"],"points d'énergie"
     affiche_chateau(grille)
-    return x,y,joueur
+    return x,y,joueur,tmp
 
 ## définir l'action du Bibbendum Chamallow
 def action_bibbendum(joueur):
@@ -147,8 +161,8 @@ def action_bibbendum(joueur):
     return joueur
     
 ## mettre en place les méchants et les pintes d'énergie
-def place_item(coordonnees,monstres,pintes):
-    coor=copy.deepcopy(coordonnees)
+def place_objet(grille,monstres,pintes):
+    coor=trouve_coor(grille,"S")
     coor_monstres={}
     for monstre in monstres:
         coor_monstres[monstre]=random.choice(coor)
@@ -167,18 +181,18 @@ def place_item(coordonnees,monstres,pintes):
     return coor_monstres,coor_energie
 
 ## appeler les méchants
-def monster(x,y,joueur,grille,coor_monstres,coor_reception,coor_vide,coor_paradis,xlen,ylen):
+def action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen):
     if [x,y] in coor_monstres.values():
         if [x,y] == coor_monstres["maitre_chateau"] :
-            x,y=action_maitre(coor_reception,grille,x,y)
+            x,y,tmp=action_maitre(grille,x,y)
         elif [x,y] == coor_monstres["savant_fou"]:
-            x,y,joueur=action_savant(joueur,grille,x,y,coor_vide,coor_paradis,xlen,ylen)
+            x,y,joueur,tmp=action_savant(joueur,grille,x,y,xlen,ylen)
         else : 
             joueur=action_bibbendum(joueur)
-    return x,y,joueur
+    return x,y,joueur,tmp
 
 ## définir les cordonnées sur lesquels apparaissent les avertissements
-def avert(coor_monstres):
+def coor_avert(coor_monstres):
     coor_advert={"maitre_chateau":[],"savant_fou":[],"bibbendum_chamallow1":[],"bibbendum_chamallow2":[],"bibbendum_chamallow3":[]}
     for ind in coor_monstres.keys():
         pos1=copy.deepcopy(coor_monstres[ind])
@@ -215,14 +229,15 @@ def cri(coor_advert,x,y):
 ### JEU ###
 
 ## affiche le menu de jeu
-def display_menu():
+def affiche_menu():
     raw_input("COMMANDES\n4: gauche\n8: haut\n6: droit\n2: bas\n0: quitter\n<tapez sur une touche pour commencer>")
     
 ## début du jeu
-def init_jeu(grille,coor):
+def init_jeu(grille):
     print("Gasper, le gentil fantôme d’un chateau, aimerait pouvoir retourner dans le monde des fantômes où il fait toujours beau et où tous ses amis l’attendent. \nMais il est perdu dans un labyrinthe de pièces dont il ne trouve plus la sortie... Voulez-vous l'aider à braver tous les dangers ?")
-    display_menu()
-    grille=salle(grille,coor,"X")
+    affiche_menu()
+    coor=trouve_coor(grille,"R")
+    grille=ajout_salle(grille,coor,"X")
     return grille
 
 ## fin du jeu : manque d'énergie
@@ -236,12 +251,12 @@ def fin_jeu_paradis():
     sys.exit()
 
 ## gestion des déplacements
-def jeu(grille,joueur,coor_vide,coor_salles,coor_paradis,coor_reception,coor_monstres,coor_energie,xlen,ylen):
+def jeu(grille,joueur,coor_monstres,coor_energie,xlen,ylen):
     option=10
-    x,y=position(grille)
+    x,y=position_joueur(grille)
     tmp="R"
     tmp_coor=copy.deepcopy([x,y])
-    coor_advert=avert(coor_monstres)
+    coor_advert=coor_avert(coor_monstres)
     while True:
         option=raw_input("Déplacement : ")
         while option not in ["0","2","4","6","8"]:
@@ -265,7 +280,7 @@ def jeu(grille,joueur,coor_vide,coor_salles,coor_paradis,coor_reception,coor_mon
         if tmp=="*":
             cri(coor_advert,x,y)
         elif tmp=="S":
-            x,y,joueur=monster(x,y,joueur,grille,coor_monstres,coor_reception,coor_vide,coor_paradis,xlen,ylen)
+            x,y,joueur,tmp=action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen)
             joueur=action_energie(x,y,joueur,coor_energie)
         elif tmp=="P":
             fin_jeu_paradis()
@@ -275,13 +290,13 @@ def jeu(grille,joueur,coor_vide,coor_salles,coor_paradis,coor_reception,coor_mon
 ### INITIALISATION DU JEU ###
 
 def FantomeEscape():
-    chateau,coor_vide,coor_salles,coor_paradis,coor_reception,coor_monstres,coor_energie,xlen,ylen = definir_chateau()   # on définit le chateau et toutes ses salles, et on place les pintes d'énergie et les mosntres
+    chateau,coor_monstres,coor_energie,xlen,ylen = definir_chateau()   # on définit le chateau et toutes ses salles, et on place les pintes d'énergie et les mosntres
     
     joueur=fantome(3)       # on initialise le joueur
 
-    chateau=init_jeu(chateau,coor_reception)
+    chateau=init_jeu(chateau)
     affiche_chateau(chateau)
-    jeu(chateau,joueur,coor_vide,coor_salles,coor_paradis,coor_reception,coor_monstres,coor_energie,xlen,ylen)  
+    jeu(chateau,joueur,coor_monstres,coor_energie,xlen,ylen)  
 
 
 ##### MAIN #####
