@@ -266,10 +266,9 @@ def jeu(event,grille,grille_init,joueur,coor_vide,coor_salles,coor_paradis,coor_
     tmp=grille_init[y][x]
     tmp_coor=copy.deepcopy([x,y])
     option=event.keysym
-    while option not in ["Left","Right","Up","Down","Escape","Enter"]:
+    if option not in ["Left","Right","Up","Down"]:
         showinfo("Attention","Pas une option de déplacement")
-        break
-    if (option=="Left") and (grille[y][x-1] != " "):
+    elif (option=="Left") and (grille[y][x-1] != " "):
         x-=1
     elif (option=="Right") and (grille[y][x+1] != " "):
         x+=1
@@ -277,9 +276,7 @@ def jeu(event,grille,grille_init,joueur,coor_vide,coor_salles,coor_paradis,coor_
         y-=1
     elif (option=="Down") and (grille[y+1][x] != " "):
         y+=1
-    elif option=="Escape" :
-        sys.exit()
-    else:
+    else :
         showinfo("Attention","C'est un mur")
     grille[tmp_coor[1]][tmp_coor[0]]=tmp
     tmp=grille_init[y][x]
