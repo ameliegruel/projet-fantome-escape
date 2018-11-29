@@ -192,25 +192,25 @@ def action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen):
     return x,y,joueur,tmp
 
 ## définir les cordonnées sur lesquels apparaissent les avertissements
-def coor_avert(coor_monstres):
-    coor_advert={"maitre_chateau":[],"savant_fou":[],"bibbendum_chamallow1":[],"bibbendum_chamallow2":[],"bibbendum_chamallow3":[]}
+def coor_avertissement(coor_monstres):
+    coor={"maitre_chateau":[],"savant_fou":[],"bibbendum_chamallow1":[],"bibbendum_chamallow2":[],"bibbendum_chamallow3":[]}
     for ind in coor_monstres.keys():
         pos1=copy.deepcopy(coor_monstres[ind])
         pos1[0]-=1
-        coor_advert[ind].append(pos1)
+        coor[ind].append(pos1)
         pos2=copy.deepcopy(coor_monstres[ind])
         pos2[0]+=1
-        coor_advert[ind].append(pos2)
+        coor[ind].append(pos2)
         pos3=copy.deepcopy(coor_monstres[ind])
         pos3[1]-=1
-        coor_advert[ind].append(pos3)
+        coor[ind].append(pos3)
         pos4=copy.deepcopy(coor_monstres[ind])
         pos4[1]+=1
-        coor_advert[ind].append(pos4)
-    return coor_advert
+        coor[ind].append(pos4)
+    return coor
 
 ## définir les cris d'avertissement
-def cri(coor_advert,x,y):
+def cri(coor_avert,x,y):
     maitre=coor_advert["maitre_chateau"]
     savant=coor_advert["savant_fou"]
     bibbendum=["bibbendum_chamallow1","bibbendum_chamallow2","bibbendum_chamallow3"]
@@ -256,7 +256,7 @@ def jeu(grille,joueur,coor_monstres,coor_energie,xlen,ylen):
     x,y=position_joueur(grille)
     tmp="R"
     tmp_coor=copy.deepcopy([x,y])
-    coor_advert=coor_avert(coor_monstres)
+    coor_avert=coor_avertissement(coor_monstres)
     while True:
         option=raw_input("Déplacement : ")
         while option not in ["0","2","4","6","8"]:
@@ -278,7 +278,7 @@ def jeu(grille,joueur,coor_monstres,coor_energie,xlen,ylen):
         grille[y][x]="X"
         affiche_chateau(grille)
         if tmp=="*":
-            cri(coor_advert,x,y)
+            cri(coor_avert,x,y)
         elif tmp=="S":
             x,y,joueur,tmp=action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen)
             joueur=action_energie(x,y,joueur,coor_energie)
