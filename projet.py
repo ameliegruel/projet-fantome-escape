@@ -18,7 +18,7 @@ def cree_chateau(x0,y0):
     return ly
 
 ## définir les salles
-def salle(grille,coor,valeur):
+def ajout_salle(grille,coor,valeur):
     for c in coor :
         grille[c[1]][c[0]]=valeur
     return grille
@@ -45,19 +45,19 @@ def definir_chateau():
             coor_vide.append([x,y])
     for y in [8,9]:
         coor_vide.append([11,y])
-    chateau=salle(chateau,coor_vide," ")
+    chateau=ajout_salle(chateau,coor_vide," ")
 
     coor_salles=[]                      # on définit les cases salles et on les place dans le chateau 
     for x in [1,5,9,13]:
         for y in [3,5,7]:
             coor_salles.append([x,y])
-    chateau=salle(chateau,coor_salles,"S")
+    chateau=ajout_salle(chateau,coor_salles,"S")
     
     coor_paradis=[[11,1]]               # on définit la case paradis et on les place dans le chateau
-    chateau=salle(chateau,coor_paradis,"P")
+    chateau=ajout_salle(chateau,coor_paradis,"P")
 
     coor_reception=[[5,9]]              # on définit la case réception et on les place dans le chateau 
-    chateau=salle(chateau,coor_reception,"R")
+    chateau=ajout_salle(chateau,coor_reception,"R")
 
     monstres=["maitre_chateau","savant_fou","bibbendum_chamallow1","bibbendum_chamallow2","bibbendum_chamallow3"]   # on définit les monstres présents dans le chateau
 
