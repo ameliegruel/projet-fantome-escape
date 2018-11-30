@@ -245,7 +245,7 @@ def init_jeu(grille,coor,fenetre,xlen,ylen):
             Canvas(fenetre, width=800 / xlen, height=700 / ylen, bg="black").grid(column=colonne,row=ligne)
     Label(fenetre,text="Gasper, le gentil fantôme d’un chateau, aimerait pouvoir retourner dans le monde des fantômes \noù il fait toujours beau et où tous ses amis l’attendent. Mais il est perdu dans un labyrinthe de pièces dont il ne trouve plus la sortie... \nVoulez-vous l'aider à braver tous les dangers ?").grid(row=ylen,columnspan=xlen)
     Label(fenetre, text="Où voulez-vous aller ? Utilisez les fléches directionnelles du clavier").grid(row=ylen+2, columnspan=xlen+5)
-    Button(fenetre, text="Quitter", command=fenetre.quit).grid(row=ylen + 2, column=xlen + 1)
+    Button(fenetre, text="Quitter", command=fenetre.quit).grid(row=ylen + 2, column=xlen-2,columnspan=2)
     grille=salle(grille,coor,"X")
     return grille
 
