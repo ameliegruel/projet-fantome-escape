@@ -181,7 +181,7 @@ def place_objet(grille,monstres,pintes):
     return coor_monstres,coor_energie
 
 ## appeler les méchants
-def action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen):
+def action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen,tmp):
     if [x,y] in coor_monstres.values():
         if [x,y] == coor_monstres["maitre_chateau"] :
             x,y,tmp=action_maitre(grille,x,y)
@@ -211,12 +211,12 @@ def coor_avertissement(coor_monstres):
 
 ## définir les cris d'avertissement
 def cri(coor_avert,x,y):
-    maitre=coor_advert["maitre_chateau"]
-    savant=coor_advert["savant_fou"]
+    maitre=coor_avert["maitre_chateau"]
+    savant=coor_avert["savant_fou"]
     bibbendum=["bibbendum_chamallow1","bibbendum_chamallow2","bibbendum_chamallow3"]
     bc=[]
     for b in bibbendum :
-        for coor in coor_advert[b]:
+        for coor in coor_avert[b]:
             bc.append(coor)
     if [x,y] in maitre:
         print "Qu'est-ce qu'on entend ? On dirait le son de clés..."
@@ -280,7 +280,7 @@ def jeu(grille,joueur,coor_monstres,coor_energie,xlen,ylen):
         if tmp=="*":
             cri(coor_avert,x,y)
         elif tmp=="S":
-            x,y,joueur,tmp=action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen)
+            x,y,joueur,tmp=action_monstre(x,y,joueur,grille,coor_monstres,xlen,ylen,tmp)
             joueur=action_energie(x,y,joueur,coor_energie)
         elif tmp=="P":
             fin_jeu_paradis()
