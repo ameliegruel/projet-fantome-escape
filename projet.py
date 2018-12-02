@@ -201,13 +201,13 @@ def coordonnees_avertissement(coordonnees_monstres):
     return coordonnees
 
 ## définir les cris d'avertissement
-def cri(coordonnees_avertissement,x,y):
-    maitre=coordonnees_avertissement["maitre_chateau"]
-    savant=coordonnees_avertissement["savant_fou"]
+def cri(coordonnees,x,y):
+    maitre=coordonnees["maitre_chateau"]
+    savant=coordonnees["savant_fou"]
     bibbendum=["bibbendum_chamallow1","bibbendum_chamallow2","bibbendum_chamallow3"]
     bc=[]
     for b in bibbendum :
-        for coordonnee in coordonnees_avertissement[b]:
+        for coordonnee in coordonnees[b]:
             bc.append(coordonnee)
     if [x,y] in maitre:
         print "Qu'est-ce qu'on entend ? On dirait le son de clés..."
@@ -247,7 +247,7 @@ def jeu(grille,joueur,coordonnees_monstres,coordonnees_energie,xlen,ylen):
     x,y=position_joueur(grille)
     tmp="R"
     tmp_coordonnees=copy.deepcopy([x,y])
-    coordonnees_avertissement=coordonnees_avertissement(coordonnees_monstres)
+    avertissement=coordonnees_avertissement(coordonnees_monstres)
     while True:
         option=raw_input("Déplacement : ")
         while option not in ["0","2","4","6","8"]:
@@ -269,7 +269,7 @@ def jeu(grille,joueur,coordonnees_monstres,coordonnees_energie,xlen,ylen):
         grille[y][x]="X"
         affiche_chateau(grille)
         if tmp=="*":
-            cri(coordonnees_avertissement,x,y)
+            cri(avertissement,x,y)
         elif tmp=="S":
             x,y,joueur,tmp=action_monstre(x,y,joueur,grille,coordonnees_monstres,xlen,ylen,tmp)
             joueur=action_energie(x,y,joueur,coordonnees_energie)
