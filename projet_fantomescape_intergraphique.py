@@ -68,7 +68,7 @@ def definir_chateau():
     energie=[]                           # on définit les pintes d'énergie présentes dans les salles
     for pinte in range(5):
         energie.append("pinte"+str(pinte+1))
-    coordonnees_monstres,coordonnees_energie=place_objet(monstres,energie)        # on place les pintes d'énergie et les monstres dans le chateau
+    coordonnees_monstres,coordonnees_energie=place_objet(chateau,monstres,energie)        # on place les pintes d'énergie et les monstres dans le chateau
 
     return chateau,coordonnees_monstres,coordonnees_energie,xlen,ylen 
     
@@ -174,7 +174,7 @@ def action_bibbendum(joueur):
         fin_jeu_energie()
     return joueur
 
-def place_objet(monstres,pintes):
+def place_objet(grille,monstres,pintes):
     coordonnees=trouve_coordonnees(grille,"S")
     coordonnees_monstres={}
     for monstre in monstres:
