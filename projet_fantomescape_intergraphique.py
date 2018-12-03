@@ -153,7 +153,7 @@ def action_savant(joueur,grille,grille_init,x,y,xlen,ylen,fenetre):
     showinfo("Savant","Oh non ! Le savant vous attaque !\nVous perdez 1 pinte de vie et vous êtes envoyé dans une autre salle")
     joueur["energie"]=joueur["energie"]-1
     if joueur["energie"]<=0:
-        fin_jeu_energie()
+        fin_jeu_energie(fenetre)
     grille[y][x]="S"
     x=0
     y=0
@@ -167,11 +167,11 @@ def action_savant(joueur,grille,grille_init,x,y,xlen,ylen,fenetre):
     showinfo("Savant","Gasper a maintenant "+str(joueur["energie"])+" points d'énergie")
     return x,y,joueur
 
-def action_bibbendum(joueur):
+def action_bibbendum(joueur,fenetre):
     showinfo("Bibbendum","Oh non ! Bibbendum Chamallow vous a paralysé avec sa mousse ! \nVous perdez 2 pintes d'énergies\n\nGasper a maintenant "+str(joueur["energie"])+" points d'énergie")
     joueur["energie"]=joueur["energie"]-2
     if joueur["energie"]<=0:
-        fin_jeu_energie()
+        fin_jeu_energie(fenetre)
     return joueur
 
 def place_objet(grille,monstres,pintes):
@@ -200,7 +200,7 @@ def action_monstre(x,y,joueur,grille,grille_init,coordonnees_monstres,xlen,ylen,
         elif [x,y] == coordonnees_monstres["savant_fou"]:
             x,y,joueur=action_savant(joueur,grille,grille_init,x,y,xlen,ylen,fenetre)
         else :
-            joueur=action_bibbendum(joueur)
+            joueur=action_bibbendum(joueur,fenetre)
     return x,y,joueur
 
 def coordonnees_avertissement(coordonnees_monstres):
@@ -247,12 +247,14 @@ def init_jeu(grille,fenetre,xlen,ylen):
     return grille
 
 ## fin du jeu : manque d'énergie
-def fin_jeu_energie():
+def fin_jeu_energie(fenetre):
     showinfo("End","Gasper n'a plus d'énergie ! \nVous avez perdu")
+    fenetre.mainloop()
     sys.exit()
 
-def fin_jeu_paradis():
+def fin_jeu_paradis(fenetre):
     showinfo("End","Gasper le gentil fantôme a atteint le paradis. Bravo ! grâce à vous il a retrouvé tous ses amis ! \nVous avez gagné")
+    fenetre.mainloop()
     sys.exit()
 
 def jeu(event,grille,grille_init,joueur,coordonnees_monstres,coordonnees_energie,xlen,ylen,fenetre):
@@ -283,7 +285,7 @@ def jeu(event,grille,grille_init,joueur,coordonnees_monstres,coordonnees_energie
         x,y,joueur=action_monstre(x,y,joueur,grille,grille_init,coordonnees_monstres,xlen,ylen,fenetre)
         joueur=action_energie(x,y,joueur,coordonnees_energie)
     elif tmp=="P":
-        fin_jeu_paradis()
+        fin_jeu_paradis(fenetre)
     
 
 ### INITIALISATION DU JEU ###
