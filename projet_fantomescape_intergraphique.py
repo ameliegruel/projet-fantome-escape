@@ -53,22 +53,22 @@ def definir_chateau():
             coordonnees_vide.append([x,y])
     for y in [8,9]:
         coordonnees_vide.append([11,y])
-    chateau=ajout_sallechateau,coordonnees_vide," ")
+    chateau=ajout_salle(chateau,coordonnees_vide," ")
     coordonnees_salles=[]                      # on définit les cases salles et on les place dans le chateau 
     for x in [1,5,9,13]:
         for y in [3,5,7]:
             coordonnees_salles.append([x,y])
-    chateau=ajout_sallechateau,coordonnees_salles,"S")
+    chateau=ajout_salle(chateau,coordonnees_salles,"S")
     coordonnees_paradis=[[11,1]]               # on définit la case paradis et on les place dans le chateau
-    chateau=ajout_sallechateau,coordonnees_paradis,"P")
+    chateau=ajout_salle(chateau,coordonnees_paradis,"P")
     coordonnees_reception=[[5,9]]              # on définit la case réception et on les place dans le chateau 
-    chateau=ajout_sallechateau,coordonnees_reception,"R")
+    chateau=ajout_salle(chateau,coordonnees_reception,"R")
 
     monstres=["maitre_chateau","savant_fou","bibbendum_chamallow1","bibbendum_chamallow2","bibbendum_chamallow3"]   # on définit les monstres présents dans le chateau
     energie=[]                           # on définit les pintes d'énergie présentes dans les salles
     for pinte in range(5):
         energie.append("pinte"+str(pinte+1))
-    coordonnees_monstres,coordonnees_energie=place_objet(coordonnees_salles,monstres,energie)        # on place les pintes d'énergie et les monstres dans le chateau
+    coordonnees_monstres,coordonnees_energie=place_objet(monstres,energie)        # on place les pintes d'énergie et les monstres dans le chateau
 
     return chateau,coordonnees_monstres,coordonnees_energie,xlen,ylen 
     
